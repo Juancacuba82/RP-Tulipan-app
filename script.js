@@ -23,7 +23,18 @@ const i18n = {
         resTot: "Total Estimado",
         distLabel: "Distancia estimada:",
         milesUnit: "millas",
-        disclaim: "* Los precios mostrados son estimaciones basadas en nuestras tarifas base. La tarifa final será confirmada formalmente."
+        disclaim: "* Los precios mostrados son estimaciones basadas en nuestras tarifas base. La tarifa final será confirmada formalmente.",
+        waBtn: "📲 Enviar Cotización por WhatsApp",
+        waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
+            `Hola! Me interesa la siguiente cotización:\n` +
+            `• Modalidad: ${mode}\n` +
+            `• Contenedor: ${type}\n` +
+            `• Retiro desde: ${loc}\n` +
+            `• Entrega en ZIP: ${zip} (~${miles} millas)\n` +
+            `• Costo base del contenedor: ${base}\n` +
+            `• Costo de transporte: ${transport}\n` +
+            `• *TOTAL ESTIMADO: ${total}*\n\n` +
+            `¿Pueden confirmarme esta cotización? Gracias!`
     },
     en: {
         langBtn: "🇪🇸 ES",
@@ -49,7 +60,18 @@ const i18n = {
         resTot: "Estimated Total",
         distLabel: "Estimated distance:",
         milesUnit: "miles",
-        disclaim: "* Prices shown are estimates based on our standard rates. The exact rate will be formally confirmed."
+        disclaim: "* Prices shown are estimates based on our standard rates. The exact rate will be formally confirmed.",
+        waBtn: "📲 Send Quote via WhatsApp",
+        waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
+            `Hello! I'm interested in the following quote:\n` +
+            `• Mode: ${mode}\n` +
+            `• Container: ${type}\n` +
+            `• Pickup from: ${loc}\n` +
+            `• Delivery ZIP: ${zip} (~${miles} miles)\n` +
+            `• Base container cost: ${base}\n` +
+            `• Transport cost: ${transport}\n` +
+            `• *ESTIMATED TOTAL: ${total}*\n\n` +
+            `Can you confirm this quote? Thank you!`
     }
 };
 
@@ -279,4 +301,39 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
     resBox.style.animation = 'none';
     resBox.offsetHeight; /* trigger reflow */
     resBox.style.animation = null;
+
+    // --- Botón de WhatsApp ---
+    // ⚠️ Reemplaza el número de abajo con el de tu WhatsApp de negocios (con código de país, sin +)
+    const WHATSAPP_NUMBER = '+17867684409';
+
+    const locNames = {
+        miami: 'Miami (33178)', tampa: 'Tampa (33619)',
+        titusville: 'Titusville (32780)', savannah: 'Savannah (31408)'
+    };
+    const typeNames = {
+        '20': "20' Estándar / Standard",
+        '40hc': "40' High Cube (HC)",
+        '45hc': "45' High Cube (HC)"
+    };
+    const modeDisplay = mode === 'rent'
+        ? (currentLang === 'es' ? 'Alquiler (Mensual)' : 'Rent (Monthly)')
+        : (currentLang === 'es' ? 'Compra' : 'Purchase');
+
+    const totalDisplay = formatCurrency(totalCost) + (mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '');
+
+    const waText = d.waMsg(
+        modeDisplay,
+        locNames[loc],
+        typeNames[type],
+        zip,
+        Math.round(distance),
+        formatCurrency(baseCost) + (mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : ''),
+        formatCurrency(transportCost),
+        totalDisplay
+    );
+
+    const waBtn = document.getElementById('wa-btn');
+    waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}`;
+    waBtn.innerText = d.waBtn;
+    waBtn.classList.remove('hidden');
 });
