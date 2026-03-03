@@ -25,6 +25,7 @@ const i18n = {
         milesUnit: "millas",
         disclaim: "* Los precios mostrados son estimaciones basadas en nuestras tarifas base. La tarifa final será confirmada formalmente.",
         resDiscount: "🎉 Descuento App",
+        promoBanner: "🎉 ¡Aprovecha! Tienes un descuento de <strong>$100</strong> exclusivo alquilando o comprando desde la aplicación.",
         waBtn: "📲 Obtener confirmación del precio",
         waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
             `Hola! Me interesa la siguiente cotización:\n` +
@@ -63,6 +64,7 @@ const i18n = {
         milesUnit: "miles",
         disclaim: "* Prices shown are estimates based on our standard rates. The exact rate will be formally confirmed.",
         resDiscount: "🎉 App Discount",
+        promoBanner: "🎉 Special offer! You have an exclusive <strong>$100</strong> discount when renting or buying through the app.",
         waBtn: "📲 Get Price Confirmation",
         waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
             `Hello! I'm interested in the following quote:\n` +
@@ -175,6 +177,9 @@ function setLanguage(lang) {
     els.resTot.innerText = d.resTot;
     els.resMilesLab.innerText = d.distLabel;
     els.disclaim.innerText = d.disclaim;
+
+    const promo = document.querySelector('.promo-banner');
+    if (promo) promo.innerHTML = d.promoBanner;
 
     els.zipError.innerText = d.errZip; // Prepare error text just in case
 }
