@@ -24,6 +24,7 @@ const i18n = {
         distLabel: "Distancia estimada:",
         milesUnit: "millas",
         disclaim: "* Los precios mostrados son estimaciones basadas en nuestras tarifas base. La tarifa final será confirmada formalmente.",
+        resDiscount: "🎉 Descuento App",
         waBtn: "📲 Obtener confirmación del precio",
         waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
             `Hola! Me interesa la siguiente cotización:\n` +
@@ -61,6 +62,7 @@ const i18n = {
         distLabel: "Estimated distance:",
         milesUnit: "miles",
         disclaim: "* Prices shown are estimates based on our standard rates. The exact rate will be formally confirmed.",
+        resDiscount: "🎉 App Discount",
         waBtn: "📲 Get Price Confirmation",
         waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
             `Hello! I'm interested in the following quote:\n` +
@@ -280,8 +282,23 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
 
     const totalCost = baseCost + transportCost;
 
+    // Descuento $100 para alquiler y compra
+    const DISCOUNT = 100;
+    const finalTotal = totalCost - DISCOUNT;
+
     // Formateador de moneda (USD)
     const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+
+    // Mostrar / ocultar fila de descuento
+    const discountRow = document.getElementById('discount-row');
+    const discountLabel = document.getElementById('t-res-discount');
+    if (DISCOUNT > 0) {
+        discountLabel.innerText = d.resDiscount;
+        document.getElementById('val-discount').innerText = '-' + formatCurrency(DISCOUNT);
+        discountRow.classList.remove('hidden');
+    } else {
+        discountRow.classList.add('hidden');
+    }
 
     let mesSuffix = mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : '';
 
@@ -290,7 +307,7 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
     els.valMiles.innerText = `${Math.round(distance)} ${d.milesUnit}`;
 
     let initialTotalText = mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '';
-    document.getElementById('val-total').innerText = formatCurrency(totalCost) + initialTotalText;
+    document.getElementById('val-total').innerText = formatCurrency(finalTotal) + initialTotalText;
 
     els.resCont.innerText = d.resCont;
 
@@ -323,8 +340,9 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
         ? (currentLang === 'es' ? 'Alquiler (Mensual)' : 'Rent (Monthly)')
         : (currentLang === 'es' ? 'Compra' : 'Purchase');
 
-    const totalDisplay = formatCurrency(totalCost) + (mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '');
+    const totalDisplay = formatCurrency(finalTotal) + (mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '');
 
+    const discountLine = DISCOUNT > 0 ? `• ${d.resDiscount}: -${formatCurrency(DISCOUNT)}\n` : '';
     const waText = d.waMsg(
         modeDisplay,
         locNames[loc],
@@ -334,7 +352,7 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
         formatCurrency(baseCost) + (mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : ''),
         formatCurrency(transportCost),
         totalDisplay
-    );
+    ) + (DISCOUNT > 0 ? `\n• ${d.resDiscount} aplicado: -${formatCurrency(DISCOUNT)}` : '');
 
     const waBtn = document.getElementById('wa-btn');
     waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}`;

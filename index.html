@@ -80,6 +80,11 @@
                         <input type="text" id="zipcode" pattern="[0-9]{5}" maxlength="5" placeholder="Ej: 33101"
                             required>
                         <p class="field-hint" id="t-hint-zip">Ingresa el Zip Code donde se entregará el contenedor.</p>
+                        <div class="promo-banner">
+                            🎉 ¡Aprovecha! Tienes un descuento de <strong>$100</strong> exclusivo alquilando o comprando
+                            desde la
+                            aplicación.
+                        </div>
                         <p id="zip-error" class="error-text hidden"
                             style="color:var(--primary); font-size:0.85rem; margin-top:5px; font-weight: 600;"></p>
                     </div>
@@ -100,6 +105,10 @@
                     <div class="result-row" style="margin-top: -10px; font-size: 0.85rem;">
                         <span id="t-res-miles">Distancia estimada:</span>
                         <span id="val-miles">0 millas</span>
+                    </div>
+                    <div class="result-row discount-row hidden" id="discount-row">
+                        <span id="t-res-discount">🎉 Descuento App</span>
+                        <span class="price-value discount-value" id="val-discount">-$100.00</span>
                     </div>
                     <div class="divider"></div>
                     <div class="result-row total-row">
