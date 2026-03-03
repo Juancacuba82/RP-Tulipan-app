@@ -24,7 +24,7 @@ const i18n = {
         distLabel: "Distancia estimada:",
         milesUnit: "millas",
         disclaim: "* Los precios mostrados son estimaciones basadas en nuestras tarifas base. La tarifa final será confirmada formalmente.",
-        waBtn: "📲 Enviar Cotización por WhatsApp",
+        waBtn: "📲 Obtener confirmación del precio",
         waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
             `Hola! Me interesa la siguiente cotización:\n` +
             `• Modalidad: ${mode}\n` +
@@ -61,7 +61,7 @@ const i18n = {
         distLabel: "Estimated distance:",
         milesUnit: "miles",
         disclaim: "* Prices shown are estimates based on our standard rates. The exact rate will be formally confirmed.",
-        waBtn: "📲 Send Quote via WhatsApp",
+        waBtn: "📲 Obtener confirmación del precio",
         waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
             `Hello! I'm interested in the following quote:\n` +
             `• Mode: ${mode}\n` +
