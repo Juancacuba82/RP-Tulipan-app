@@ -61,7 +61,7 @@ const i18n = {
         distLabel: "Estimated distance:",
         milesUnit: "miles",
         disclaim: "* Prices shown are estimates based on our standard rates. The exact rate will be formally confirmed.",
-        waBtn: "📲 Obtener confirmación del precio",
+        waBtn: "📲 Get Price Confirmation",
         waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
             `Hello! I'm interested in the following quote:\n` +
             `• Mode: ${mode}\n` +
@@ -83,21 +83,24 @@ const PRICING = {
         miami: { "20": 1350, "40hc": 1650, "45hc": 2000 },
         tampa: { "20": 1500, "40hc": 1700, "45hc": 2000 },
         titusville: { "20": 1600, "40hc": 1850, "45hc": 2100 },
-        savannah: { "20": 1200, "40hc": 1600, "45hc": 1950 }
+        savannah: { "20": 1200, "40hc": 1600, "45hc": 1950 },
+        jacksonville: { "20": 1600, "40hc": 1950 }
     },
     rent: {
         miami: { "20": 150, "40hc": 250, "45hc": 280 },
         tampa: { "20": 150, "40hc": 250, "45hc": 280 },
         titusville: { "20": 150, "40hc": 250, "45hc": 280 },
-        savannah: { "20": 150, "40hc": 250, "45hc": 280 }
+        savannah: { "20": 150, "40hc": 250, "45hc": 280 },
+        jacksonville: { "20": 150, "40hc": 250 }
     }
 };
 
 const LOCATIONS = {
-    miami: { lat: 25.8229, lon: -80.4005 },     // 33178
-    tampa: { lat: 27.9398, lon: -82.3768 },     // 33619
-    titusville: { lat: 28.5830, lon: -80.8197 }, // 32780
-    savannah: { lat: 32.1281, lon: -81.2050 }   // 31408
+    miami: { lat: 25.8229, lon: -80.4005 },       // 33178
+    tampa: { lat: 27.9398, lon: -82.3768 },       // 33619
+    titusville: { lat: 28.5830, lon: -80.8197 },  // 32780
+    savannah: { lat: 32.1281, lon: -81.2050 },    // 31408
+    jacksonville: { lat: 30.3944, lon: -81.5619 } // 32218
 };
 
 // Fórmula Haversine modificada (+ 20% para aproximar rutas terrestres)
@@ -189,10 +192,10 @@ function updateContainerOptions() {
     const loc = document.getElementById('location').value;
     const tc = document.getElementById('container-type');
 
-    // El usuario indicó que en Tampa y Titusville no hay 45'
+    // El usuario indicó que en Tampa, Titusville y Jacksonville no hay 45'
     for (let i = 0; i < tc.options.length; i++) {
         if (tc.options[i].value === '45hc') {
-            if (loc === 'tampa' || loc === 'titusville') {
+            if (loc === 'tampa' || loc === 'titusville' || loc === 'jacksonville') {
                 tc.options[i].style.display = 'none';
                 if (tc.value === '45hc') tc.value = '40hc';
             } else {
@@ -308,7 +311,8 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
 
     const locNames = {
         miami: 'Miami (33178)', tampa: 'Tampa (33619)',
-        titusville: 'Titusville (32780)', savannah: 'Savannah (31408)'
+        titusville: 'Titusville (32780)', savannah: 'Savannah (31408)',
+        jacksonville: 'Jacksonville (32218)'
     };
     const typeNames = {
         '20': "20' Estándar / Standard",
