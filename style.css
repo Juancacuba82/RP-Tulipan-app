@@ -245,8 +245,19 @@ label {
 }
 
 #mode-rent:checked~#t-mode-rent,
-#mode-buy:checked~#t-mode-buy {
+#mode-buy:checked~#t-mode-buy,
+#cond-used:checked~#t-cond-used,
+#cond-new:checked~#t-cond-new {
     color: var(--primary);
+}
+
+#cond-new:checked~.switch-slider {
+    left: 50%;
+}
+
+.toggle-switch-small .switch-label {
+    padding: 10px 15px;
+    font-size: 0.95rem;
 }
 
 /* Select & Inputs */

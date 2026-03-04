@@ -6,6 +6,9 @@ const i18n = {
         modeLabel: "¿Qué necesitas?",
         modeRent: "Alquilar (Mensual)",
         modeBuy: "Comprar",
+        condLabel: "Estado del Contenedor",
+        condNew: "Nuevo",
+        condUsed: "Usado",
         locLabel: "Ubicación de Retiro",
         typeLabel: "Tamaño del Contenedor",
         type20: "20' Estándar",
@@ -45,6 +48,9 @@ const i18n = {
         modeLabel: "What do you need?",
         modeRent: "Rent (Monthly)",
         modeBuy: "Buy",
+        condLabel: "Container Condition",
+        condNew: "New",
+        condUsed: "Used",
         locLabel: "Pickup Location",
         typeLabel: "Container Size",
         type20: "20' Standard",
@@ -83,12 +89,20 @@ let currentLang = 'es';
 
 // Precios Reales Proveídos
 const PRICING = {
-    buy: {
+    // Precios de contenedores USADOS (compra)
+    buy_used: {
         miami: { "20": 1350, "40hc": 1650, "45hc": 2000 },
         tampa: { "20": 1500, "40hc": 1700, "45hc": 2000 },
         titusville: { "20": 1600, "40hc": 1850, "45hc": 2100 },
         savannah: { "20": 1200, "40hc": 1600, "45hc": 1950 },
         jacksonville: { "20": 1600, "40hc": 1950 }
+    },
+    // Precios de contenedores NUEVOS (compra) — solo 20' y 40', sin Titusville
+    buy_new: {
+        miami: { "20": 2350, "40hc": 3450 },
+        tampa: { "20": 2600, "40hc": 3700 },
+        jacksonville: { "20": 2650, "40hc": 3650 },
+        savannah: { "20": 2300, "40hc": 3300 }
     },
     rent: {
         miami: { "20": 150, "40hc": 250, "45hc": 280 },
@@ -98,6 +112,9 @@ const PRICING = {
         jacksonville: { "20": 150, "40hc": 250 }
     }
 };
+
+// Ubicaciones donde NO hay contenedores nuevos disponibles
+const NO_NEW_LOCATIONS = ['titusville'];
 
 const LOCATIONS = {
     miami: { lat: 25.8229, lon: -80.4005 },       // 33178
@@ -136,6 +153,10 @@ const els = {
     modeLabel: document.getElementById('t-label-mode'),
     modeRent: document.getElementById('t-mode-rent'),
     modeBuy: document.getElementById('t-mode-buy'),
+    condGroup: document.getElementById('condition-group'),
+    condLabel: document.getElementById('t-label-condition'),
+    condNew: document.getElementById('t-cond-new'),
+    condUsed: document.getElementById('t-cond-used'),
     locLabel: document.getElementById('t-label-location'),
     typeLabel: document.getElementById('t-label-type'),
     zipLabel: document.getElementById('t-label-zip'),
@@ -159,6 +180,9 @@ function setLanguage(lang) {
     els.modeLabel.innerText = d.modeLabel;
     els.modeRent.innerText = d.modeRent;
     els.modeBuy.innerText = d.modeBuy;
+    els.condLabel.innerText = d.condLabel;
+    els.condNew.innerText = d.condNew;
+    els.condUsed.innerText = d.condUsed;
     els.locLabel.innerText = d.locLabel;
     els.typeLabel.innerText = d.typeLabel;
 
@@ -198,22 +222,54 @@ function updateContainerOptions() {
     const mode = document.querySelector('input[name="mode"]:checked').value;
     const loc = document.getElementById('location').value;
     const tc = document.getElementById('container-type');
+    const condition = document.querySelector('input[name="condition"]:checked').value;
 
-    // El usuario indicó que en Tampa, Titusville y Jacksonville no hay 45'
-    for (let i = 0; i < tc.options.length; i++) {
-        if (tc.options[i].value === '45hc') {
-            if (loc === 'tampa' || loc === 'titusville' || loc === 'jacksonville') {
-                tc.options[i].style.display = 'none';
-                if (tc.value === '45hc') tc.value = '40hc';
-            } else {
-                tc.options[i].style.display = '';
+    // Mostrar u ocultar grupo de condición (nuevo/usado) según el modo
+    if (mode === 'buy') {
+        els.condGroup.classList.remove('hidden');
+    } else {
+        els.condGroup.classList.add('hidden');
+        // En alquiler siempre reseteamos a 'used' (no aplica new)
+        document.getElementById('cond-used').checked = true;
+    }
+
+    const isNew = condition === 'new' && mode === 'buy';
+
+    // Ocultar ubicaciones que no tienen contenedores nuevos
+    const locSelect = document.getElementById('location');
+    let locationChanged = false;
+
+    for (let i = 0; i < locSelect.options.length; i++) {
+        const optionVal = locSelect.options[i].value;
+        if (NO_NEW_LOCATIONS.includes(optionVal)) {
+            locSelect.options[i].style.display = isNew ? 'none' : '';
+            if (isNew && loc === optionVal) {
+                // Seleccionar Miami por defecto si el usuario estaba en una ubicación no válida
+                locSelect.value = 'miami';
+                locationChanged = true;
             }
+        }
+    }
+
+    // Actualizar loc en caso de que lo hayamos cambiado para que la validación de contenedores HC use el correcto
+    const currentLoc = locationChanged ? 'miami' : loc;
+
+    // Si es contenedor NUEVO: solo 20' y 40', sin 45'.
+    for (let i = 0; i < tc.options.length; i++) {
+        const val = tc.options[i].value;
+        if (val === '45hc') {
+            const hide45 = currentLoc === 'tampa' || currentLoc === 'titusville' || currentLoc === 'jacksonville' || isNew;
+            tc.options[i].style.display = hide45 ? 'none' : '';
+            if (hide45 && tc.value === '45hc') tc.value = '40hc';
         }
     }
 }
 
 document.getElementById('location').addEventListener('change', updateContainerOptions);
 document.querySelectorAll('input[name="mode"]').forEach(radio => {
+    radio.addEventListener('change', updateContainerOptions);
+});
+document.querySelectorAll('input[name="condition"]').forEach(radio => {
     radio.addEventListener('change', updateContainerOptions);
 });
 
@@ -274,7 +330,10 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
     els.btnCalc.disabled = false;
     els.btnCalc.innerText = d.btnCalc;
 
-    const baseCost = PRICING[mode][loc][type];
+    // Remove redundant selector by reusing the let or just not redeclaring in block
+    const condVal = document.querySelector('input[name="condition"]:checked').value;
+    const pricingKey = mode === 'buy' ? `buy_${condVal}` : 'rent';
+    const baseCost = PRICING[pricingKey][loc][type];
 
     // Si alquilan, se cobra viaje de ida y viaje de recogida
     let transportCost = calculateTransport(distance);
@@ -341,9 +400,13 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
         '40hc': "40' High Cube (HC)",
         '45hc': "45' High Cube (HC)"
     };
+    const condVal2 = document.querySelector('input[name="condition"]:checked').value;
+    const condDisplay = condVal2 === 'new'
+        ? (currentLang === 'es' ? 'Nuevo' : 'New')
+        : (currentLang === 'es' ? 'Usado' : 'Used');
     const modeDisplay = mode === 'rent'
         ? (currentLang === 'es' ? 'Alquiler (Mensual)' : 'Rent (Monthly)')
-        : (currentLang === 'es' ? 'Compra' : 'Purchase');
+        : (currentLang === 'es' ? `Compra (${condDisplay})` : `Purchase (${condDisplay})`);
 
     const totalDisplay = formatCurrency(finalTotal) + (mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '');
 

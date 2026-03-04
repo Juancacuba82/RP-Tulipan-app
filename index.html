@@ -45,6 +45,23 @@
                         </div>
                     </div>
 
+                    <!-- NUEVO GRUPO: ESTADO DEL CONTENEDOR (Oculto por defecto en Alquilar) -->
+                    <div class="form-group hidden" id="condition-group">
+                        <label id="t-label-condition">Estado del Contenedor</label>
+                        <div class="toggle-switch toggle-switch-small">
+                            <input type="radio" id="cond-used" name="condition" value="used" checked>
+                            <label for="cond-used" class="switch-label" id="t-cond-used">Usado</label>
+
+                            <input type="radio" id="cond-new" name="condition" value="new">
+                            <label for="cond-new" class="switch-label" id="t-cond-new">Nuevo</label>
+                            <div class="switch-slider"></div>
+                        </div>
+                        <p class="field-hint error-text no-new-notice hidden"
+                            style="color:var(--primary); font-size:0.8rem; margin-top:5px; font-weight: 600;">
+                            * Contenedores nuevos no disponibles en esta ubicación.
+                        </p>
+                    </div>
+
                     <div class="form-group">
                         <label id="t-label-location">Ubicación de Retiro</label>
                         <div class="select-wrapper">
