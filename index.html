@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RP Tulipan Transport Inc. - Cotización de Contenedores</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="logo.png" alt="RP Tulipan Transport Logo" class="tulip-logo">
+            <div class="logo-text">
+                <span class="logo-rp">RP TULIPAN</span>
+                <span class="logo-transport">TRANSPORT INC</span>
+            </div>
+        </div>
+        <div class="controls">
+            <button id="lang-toggle" class="lang-btn">🇺🇸 EN</button>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="glass-panel">
+                <h1 id="t-hero-title">Cotiza tu Contenedor Al Instante</h1>
+                <p id="t-hero-sub" class="subtitle">Encuentra los precios estimados de alquiler o venta, con entrega
+                    directa en tu ubicación.</p>
+
+                <form id="quote-form" class="calculator-form">
+
+                    <div class="form-group">
+                        <label id="t-label-mode">¿Qué necesitas?</label>
+                        <div class="toggle-switch">
+                            <input type="radio" id="mode-rent" name="mode" value="rent" checked>
+                            <label for="mode-rent" class="switch-label" id="t-mode-rent">Alquilar (Mensual)</label>
+
+                            <input type="radio" id="mode-buy" name="mode" value="buy">
+                            <label for="mode-buy" class="switch-label" id="t-mode-buy">Comprar</label>
+                            <div class="switch-slider"></div>
+                        </div>
+                    </div>
+
+                    <!-- NUEVO GRUPO: ESTADO DEL CONTENEDOR (Oculto por defecto en Alquilar) -->
+                    <div class="form-group hidden" id="condition-group">
+                        <label id="t-label-condition">Estado del Contenedor</label>
+                        <div class="toggle-switch toggle-switch-small">
+                            <input type="radio" id="cond-used" name="condition" value="used" checked>
+                            <label for="cond-used" class="switch-label" id="t-cond-used">Usado</label>
+
+                            <input type="radio" id="cond-new" name="condition" value="new">
+                            <label for="cond-new" class="switch-label" id="t-cond-new">Nuevo</label>
+                            <div class="switch-slider"></div>
+                        </div>
+                        <p class="field-hint error-text no-new-notice hidden"
+                            style="color:var(--primary); font-size:0.8rem; margin-top:5px; font-weight: 600;">
+                            * Contenedores nuevos no disponibles en esta ubicación.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="t-label-location">Ubicación de Retiro</label>
+                        <div class="select-wrapper">
+                            <select id="location">
+                                <option value="miami">Miami (33178)</option>
+                                <option value="tampa">Tampa (33619)</option>
+                                <option value="titusville">Titusville (32780)</option>
+                                <option value="savannah">Savannah (31408)</option>
+                                <option value="jacksonville">Jacksonville (32218)</option>
+                            </select>
+                            <svg class="dropdown-icon" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="t-label-type">Tamaño del Contenedor</label>
+                        <div class="select-wrapper">
+                            <select id="container-type">
+                                <option value="20">20' Estándar</option>
+                                <option value="40hc">40' High Cube (HC)</option>
+                                <option value="45hc">45' High Cube (HC)</option>
+                            </select>
+                            <svg class="dropdown-icon" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- NUEVO GRUPO: TIPO DE USO -->
+                    <div class="form-group hidden" id="use-type-group">
+                        <label id="t-label-use">Tipo de Uso</label>
+                        <div class="select-wrapper">
+                            <select id="use-type">
+                                <option value="national" id="t-use-national">Uso Nacional</option>
+                                <option value="export" id="t-use-export">Exportación</option>
+                            </select>
+                            <svg class="dropdown-icon" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="t-label-zip">Código Postal de Entrega (US)</label>
+                        <input type="text" id="zipcode" pattern="[0-9]{5}" maxlength="5" placeholder="Ej: 33101"
+                            required>
+                        <p class="field-hint" id="t-hint-zip">Ingresa el Zip Code donde se entregará el contenedor.</p>
+                        <div class="promo-banner">
+                            🎉 ¡Aprovecha! Tienes un descuento de <strong>$100</strong> exclusivo alquilando o comprando
+                            desde la
+                            aplicación.
+                        </div>
+                        <p id="zip-error" class="error-text hidden"
+                            style="color:var(--primary); font-size:0.85rem; margin-top:5px; font-weight: 600;"></p>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="t-btn-calc">Obtener Presupuesto Estimado</button>
+                </form>
+
+                <div id="result-box" class="result-box hidden">
+                    <h3 id="t-res-title">Resumen de Cotización</h3>
+                    <div class="result-row">
+                        <span id="t-res-container">Costo Base del Contenedor</span>
+                        <span class="price-value" id="val-base">$0.00</span>
+                    </div>
+                    <div class="result-row">
+                        <span id="t-res-transport">Costo de Transporte</span>
+                        <span class="price-value" id="val-transport">$0.00</span>
+                    </div>
+                    <div class="result-row" style="margin-top: -10px; font-size: 0.85rem;">
+                        <span id="t-res-miles">Distancia estimada:</span>
+                        <span id="val-miles">0 millas</span>
+                    </div>
+                    <div class="result-row" id="export-fee-row" style="color:var(--primary-dark); display: none;">
+                        <span id="t-res-export-fee">Cargo por Exportación (SOC)</span>
+                        <span class="price-value" id="val-export-fee">+$250.00</span>
+                    </div>
+                    <div class="result-row discount-row hidden" id="discount-row">
+                        <span id="t-res-discount">🎉 Descuento App</span>
+                        <span class="price-value discount-value" id="val-discount">-$100.00</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="result-row total-row">
+                        <span id="t-res-total">Total Estimado</span>
+                        <span class="price-value highlight" id="val-total">$0.00</span>
+                    </div>
+                    <p class="disclaimer" id="t-disclaimer">* Los precios mostrados son estimaciones de ejemplo y están
+                        sujetos a verificación. La tarifa exacta será confirmada formalmente.</p>
+                    <a id="wa-btn" href="#" target="_blank" rel="noopener noreferrer" class="wa-btn hidden">
+                        📲 Obtener confirmación del precio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>
