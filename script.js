@@ -14,6 +14,9 @@ const i18n = {
         type20: "20' Estándar",
         type40hc: "40' High Cube (HC)",
         type45hc: "45' High Cube (HC)",
+        useLabel: "Tipo de Uso",
+        useNational: "Uso Nacional",
+        useExport: "Exportación +$250",
         zipLabel: "Código Postal de Entrega (US)",
         zipHint: "Ingresa el Zip Code donde se entregará el contenedor.",
         btnCalc: "Obtener Presupuesto Estimado",
@@ -23,6 +26,7 @@ const i18n = {
         resCont: "Costo Base del Contenedor",
         resTrans: "Costo de Transporte (Envío)",
         resTransRent: "Costo de Transporte (Envío y Recogida)",
+        resExportFee: "Cargo por Exportación (SOC)",
         resTot: "Total Estimado",
         distLabel: "Distancia estimada:",
         milesUnit: "millas",
@@ -30,14 +34,16 @@ const i18n = {
         resDiscount: "🎉 Descuento App",
         promoBanner: "🎉 ¡Aprovecha! Tienes un descuento de <strong>$100</strong> exclusivo alquilando o comprando desde la aplicación.",
         waBtn: "📲 Obtener confirmación del precio",
-        waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
+        waMsg: (mode, loc, type, useTypeStr, zip, miles, base, transport, exportFee, total) =>
             `Hola! Me interesa la siguiente cotización:\n` +
             `• Modalidad: ${mode}\n` +
+            `• Tipo de uso: ${useTypeStr}\n` +
             `• Contenedor: ${type}\n` +
             `• Retiro desde: ${loc}\n` +
             `• Entrega en ZIP: ${zip} (~${miles} millas)\n` +
             `• Costo base del contenedor: ${base}\n` +
             `• Costo de transporte: ${transport}\n` +
+            (exportFee ? `• Cargo por exportación: ${exportFee}\n` : ``) +
             `• *TOTAL ESTIMADO: ${total}*\n\n` +
             `¿Pueden confirmarme esta cotización? Gracias!`
     },
@@ -56,6 +62,9 @@ const i18n = {
         type20: "20' Standard",
         type40hc: "40' High Cube (HC)",
         type45hc: "45' High Cube (HC)",
+        useLabel: "Type of Use",
+        useNational: "National Use",
+        useExport: "Export +$250",
         zipLabel: "Delivery Zip Code (US)",
         zipHint: "Enter the Zip Code where the container will be delivered.",
         btnCalc: "Get Estimated Quote",
@@ -65,6 +74,7 @@ const i18n = {
         resCont: "Base Container Cost",
         resTrans: "Transport Cost (Delivery)",
         resTransRent: "Transport Cost (Delivery & Pickup)",
+        resExportFee: "Export Fee (SOC)",
         resTot: "Estimated Total",
         distLabel: "Estimated distance:",
         milesUnit: "miles",
@@ -72,14 +82,16 @@ const i18n = {
         resDiscount: "🎉 App Discount",
         promoBanner: "🎉 Special offer! You have an exclusive <strong>$100</strong> discount when renting or buying through the app.",
         waBtn: "📲 Get Price Confirmation",
-        waMsg: (mode, loc, type, zip, miles, base, transport, total) =>
+        waMsg: (mode, loc, type, useTypeStr, zip, miles, base, transport, exportFee, total) =>
             `Hello! I'm interested in the following quote:\n` +
             `• Mode: ${mode}\n` +
+            `• Use Type: ${useTypeStr}\n` +
             `• Container: ${type}\n` +
             `• Pickup from: ${loc}\n` +
             `• Delivery ZIP: ${zip} (~${miles} miles)\n` +
             `• Base container cost: ${base}\n` +
             `• Transport cost: ${transport}\n` +
+            (exportFee ? `• Export fee: ${exportFee}\n` : ``) +
             `• *ESTIMATED TOTAL: ${total}*\n\n` +
             `Can you confirm this quote? Thank you!`
     }
@@ -92,7 +104,7 @@ const PRICING = {
     // Precios de contenedores USADOS (compra)
     buy_used: {
         miami: { "20": 1350, "40hc": 1650, "45hc": 2000 },
-        tampa: { "20": 1500, "40hc": 1700, "45hc": 2000 },
+        tampa: { "20": 1600, "40hc": 2000, "45hc": 2000 },
         titusville: { "20": 1600, "40hc": 1850, "45hc": 2100 },
         savannah: { "20": 1200, "40hc": 1600, "45hc": 1950 },
         jacksonville: { "20": 1600, "40hc": 1950 }
@@ -159,6 +171,9 @@ const els = {
     condUsed: document.getElementById('t-cond-used'),
     locLabel: document.getElementById('t-label-location'),
     typeLabel: document.getElementById('t-label-type'),
+    useLabel: document.getElementById('t-label-use'),
+    useNational: document.getElementById('t-use-national'),
+    useExport: document.getElementById('t-use-export'),
     zipLabel: document.getElementById('t-label-zip'),
     zipHint: document.getElementById('t-hint-zip'),
     zipError: document.getElementById('zip-error'),
@@ -166,6 +181,7 @@ const els = {
     resTit: document.getElementById('t-res-title'),
     resCont: document.getElementById('t-res-container'),
     resTrans: document.getElementById('t-res-transport'),
+    resExportFee: document.getElementById('t-res-export-fee'),
     resTot: document.getElementById('t-res-total'),
     resMilesLab: document.getElementById('t-res-miles'),
     valMiles: document.getElementById('val-miles'),
@@ -186,6 +202,10 @@ function setLanguage(lang) {
     els.locLabel.innerText = d.locLabel;
     els.typeLabel.innerText = d.typeLabel;
 
+    if (els.useLabel) els.useLabel.innerText = d.useLabel;
+    if (els.useNational) els.useNational.innerText = d.useNational;
+    if (els.useExport) els.useExport.innerText = d.useExport;
+
     // Select options logic
     const tc = document.getElementById('container-type');
     tc.options[0].text = d.type20;
@@ -198,6 +218,7 @@ function setLanguage(lang) {
     els.resTit.innerText = d.resTit;
     els.resCont.innerText = d.resCont;
     // resTrans se determinará en el cálculo según el modo seleccionado
+    if (els.resExportFee) els.resExportFee.innerText = d.resExportFee;
     els.resTot.innerText = d.resTot;
     els.resMilesLab.innerText = d.distLabel;
     els.disclaim.innerText = d.disclaim;
@@ -225,12 +246,18 @@ function updateContainerOptions() {
     const condition = document.querySelector('input[name="condition"]:checked').value;
 
     // Mostrar u ocultar grupo de condición (nuevo/usado) según el modo
+    const useTypeGroup = document.getElementById('use-type-group');
     if (mode === 'buy') {
         els.condGroup.classList.remove('hidden');
+        if (useTypeGroup) useTypeGroup.classList.remove('hidden');
     } else {
         els.condGroup.classList.add('hidden');
         // En alquiler siempre reseteamos a 'used' (no aplica new)
         document.getElementById('cond-used').checked = true;
+
+        // En alquiler ocultamos tipo de uso y reseteamos a use-national
+        if (useTypeGroup) useTypeGroup.classList.add('hidden');
+        document.getElementById('use-type').value = 'national';
     }
 
     const isNew = condition === 'new' && mode === 'buy';
@@ -289,6 +316,7 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
     const mode = document.querySelector('input[name="mode"]:checked').value;
     const loc = document.getElementById('location').value;
     const type = document.getElementById('container-type').value;
+    const useType = document.getElementById('use-type').value;
     const zip = document.getElementById('zipcode').value;
 
     let distance = 0;
@@ -344,14 +372,24 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
         els.resTrans.innerText = d.resTrans;
     }
 
-    const totalCost = baseCost + transportCost;
+    // Formateador de moneda (USD)
+    const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+
+    let exportFeeValue = 0;
+    const exportFeeRow = document.getElementById('export-fee-row');
+    if (useType === 'export' && mode === 'buy') {
+        exportFeeValue = 250;
+        exportFeeRow.style.setProperty('display', 'flex', 'important');
+        document.getElementById('val-export-fee').innerText = '+' + formatCurrency(exportFeeValue);
+    } else {
+        exportFeeRow.style.setProperty('display', 'none', 'important');
+    }
+
+    const totalCost = baseCost + transportCost + exportFeeValue;
 
     // Descuento $100 para alquiler y compra
     const DISCOUNT = 100;
     const finalTotal = totalCost - DISCOUNT;
-
-    // Formateador de moneda (USD)
-    const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
 
     // Mostrar / ocultar fila de descuento
     const discountRow = document.getElementById('discount-row');
@@ -408,6 +446,12 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
         ? (currentLang === 'es' ? 'Alquiler (Mensual)' : 'Rent (Monthly)')
         : (currentLang === 'es' ? `Compra (${condDisplay})` : `Purchase (${condDisplay})`);
 
+    const useTypeDisplay = useType === 'export'
+        ? (currentLang === 'es' ? 'Exportación' : 'Export')
+        : (currentLang === 'es' ? 'Uso Nacional' : 'National Use');
+
+    const exportFeeFormatted = exportFeeValue > 0 ? formatCurrency(exportFeeValue) : null;
+
     const totalDisplay = formatCurrency(finalTotal) + (mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '');
 
     const discountLine = DISCOUNT > 0 ? `• ${d.resDiscount}: -${formatCurrency(DISCOUNT)}\n` : '';
@@ -415,10 +459,12 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
         modeDisplay,
         locNames[loc],
         typeNames[type],
+        useTypeDisplay,
         zip,
         Math.round(distance),
         formatCurrency(baseCost) + (mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : ''),
         formatCurrency(transportCost),
+        exportFeeFormatted,
         totalDisplay
     ) + (DISCOUNT > 0 ? `\n• ${d.resDiscount} aplicado: -${formatCurrency(DISCOUNT)}` : '');
 

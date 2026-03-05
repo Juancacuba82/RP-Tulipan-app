@@ -92,6 +92,20 @@
                         </div>
                     </div>
 
+                    <!-- NUEVO GRUPO: TIPO DE USO -->
+                    <div class="form-group hidden" id="use-type-group">
+                        <label id="t-label-use">Tipo de Uso</label>
+                        <div class="select-wrapper">
+                            <select id="use-type">
+                                <option value="national" id="t-use-national">Uso Nacional</option>
+                                <option value="export" id="t-use-export">Exportación</option>
+                            </select>
+                            <svg class="dropdown-icon" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label id="t-label-zip">Código Postal de Entrega (US)</label>
                         <input type="text" id="zipcode" pattern="[0-9]{5}" maxlength="5" placeholder="Ej: 33101"
@@ -122,6 +136,10 @@
                     <div class="result-row" style="margin-top: -10px; font-size: 0.85rem;">
                         <span id="t-res-miles">Distancia estimada:</span>
                         <span id="val-miles">0 millas</span>
+                    </div>
+                    <div class="result-row" id="export-fee-row" style="color:var(--primary-dark); display: none;">
+                        <span id="t-res-export-fee">Cargo por Exportación (SOC)</span>
+                        <span class="price-value" id="val-export-fee">+$250.00</span>
                     </div>
                     <div class="result-row discount-row hidden" id="discount-row">
                         <span id="t-res-discount">🎉 Descuento App</span>
