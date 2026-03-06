@@ -15,8 +15,8 @@ const i18n = {
         type40hc: "40' High Cube (HC)",
         type45hc: "45' High Cube (HC)",
         useLabel: "Tipo de Uso",
-        useNational: "Uso Nacional",
-        useExport: "Exportación +$250",
+        useNational: "WWT (storage)",
+        useExport: "sea worthy certificate (shipping) +$250",
         zipLabel: "Código Postal de Entrega (US)",
         zipHint: "Ingresa el Zip Code donde se entregará el contenedor.",
         btnCalc: "Obtener Presupuesto Estimado",
@@ -63,8 +63,8 @@ const i18n = {
         type40hc: "40' High Cube (HC)",
         type45hc: "45' High Cube (HC)",
         useLabel: "Type of Use",
-        useNational: "National Use",
-        useExport: "Export +$250",
+        useNational: "WWT (storage)",
+        useExport: "sea worthy certificate (shipping)",
         zipLabel: "Delivery Zip Code (US)",
         zipHint: "Enter the Zip Code where the container will be delivered.",
         btnCalc: "Get Estimated Quote",
@@ -447,8 +447,8 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
         : (currentLang === 'es' ? `Compra (${condDisplay})` : `Purchase (${condDisplay})`);
 
     const useTypeDisplay = useType === 'export'
-        ? (currentLang === 'es' ? 'Exportación' : 'Export')
-        : (currentLang === 'es' ? 'Uso Nacional' : 'National Use');
+        ? 'sea worthy certificate (shipping)'
+        : 'WWT (storage)';
 
     const exportFeeFormatted = exportFeeValue > 0 ? formatCurrency(exportFeeValue) : null;
 
@@ -469,7 +469,16 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
     ) + (DISCOUNT > 0 ? `\n• ${d.resDiscount} aplicado: -${formatCurrency(DISCOUNT)}` : '');
 
     const waBtn = document.getElementById('wa-btn');
-    waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}`;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // En móviles, abre la app de WhatsApp directamente
+        waBtn.href = `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(waText)}`;
+    } else {
+        // En computadora, abre WhatsApp Web directamente
+        waBtn.href = `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(waText)}`;
+    }
+
     waBtn.innerText = d.waBtn;
     waBtn.classList.remove('hidden');
 });
