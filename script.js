@@ -97,7 +97,7 @@ const i18n = {
     }
 };
 
-let currentLang = 'es';
+let currentLang = 'en';
 
 // Precios Reales Proveídos
 const PRICING = {
@@ -301,6 +301,7 @@ document.querySelectorAll('input[name="condition"]').forEach(radio => {
 });
 
 // Inicializar estado de opciones
+setLanguage(currentLang);
 updateContainerOptions();
 
 // Lógica de cálculo
