@@ -103,11 +103,11 @@ let currentLang = 'en';
 const PRICING = {
     // Precios de contenedores USADOS (compra)
     buy_used: {
-        miami: { "20": 1350, "40hc": 1650, "45hc": 2000 },
-        tampa: { "20": 1600, "40hc": 2000, "45hc": 2000 },
-        titusville: { "20": 1600, "40hc": 1850, "45hc": 2100 },
+        miami: { "20": 1300, "40hc": 1650, "45hc": 2000 },
+        tampa: { "20": 1650, "40hc": 2000, "45hc": 2100 },
+        titusville: { "20": 1650, "40hc": 2000, "45hc": 2100 },
         savannah: { "20": 1200, "40hc": 1600, "45hc": 1950 },
-        jacksonville: { "20": 1600, "40hc": 1950 }
+        jacksonville: { "20": 1650, "40hc": 2000 }
     },
     // Precios de contenedores NUEVOS (compra) — solo 20' y 40', sin Titusville
     buy_new: {
@@ -290,6 +290,18 @@ function updateContainerOptions() {
             if (hide45 && tc.value === '45hc') tc.value = '40hc';
         }
     }
+
+    // Ocultar banner de descuento si es Miami (33178)
+    const promo = document.querySelector('.promo-banner');
+    if (promo) {
+        if (currentLoc === 'miami') {
+            promo.classList.add('hidden');
+            promo.style.display = 'none';
+        } else {
+            promo.classList.remove('hidden');
+            promo.style.display = 'block';
+        }
+    }
 }
 
 document.getElementById('location').addEventListener('change', updateContainerOptions);
@@ -388,8 +400,8 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
 
     const totalCost = baseCost + transportCost + exportFeeValue;
 
-    // Descuento $100 para alquiler y compra
-    const DISCOUNT = 100;
+    // Descuento $100 para alquiler y compra (excepto en Miami 33178)
+    const DISCOUNT = (loc.trim().toLowerCase() === 'miami') ? 0 : 100;
     const finalTotal = totalCost - DISCOUNT;
 
     // Mostrar / ocultar fila de descuento
@@ -399,8 +411,10 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
         discountLabel.innerText = d.resDiscount;
         document.getElementById('val-discount').innerText = '-' + formatCurrency(DISCOUNT);
         discountRow.classList.remove('hidden');
+        discountRow.style.display = 'flex';
     } else {
         discountRow.classList.add('hidden');
+        discountRow.style.display = 'none';
     }
 
     let mesSuffix = mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : '';
@@ -455,7 +469,6 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
 
     const totalDisplay = formatCurrency(finalTotal) + (mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '');
 
-    const discountLine = DISCOUNT > 0 ? `• ${d.resDiscount}: -${formatCurrency(DISCOUNT)}\n` : '';
     const waText = d.waMsg(
         modeDisplay,
         locNames[loc],

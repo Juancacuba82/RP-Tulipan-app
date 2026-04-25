@@ -340,7 +340,7 @@ input[type="number"]:focus {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .result-box.hidden {
