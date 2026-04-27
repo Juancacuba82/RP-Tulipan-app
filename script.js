@@ -104,9 +104,9 @@ const PRICING = {
     // Precios de contenedores USADOS (compra)
     buy_used: {
         miami: { "20": 1300, "40hc": 1650, "45hc": 2000 },
-        tampa: { "20": 1650, "40hc": 2000, "45hc": 2100 },
-        titusville: { "20": 1650, "40hc": 2000, "45hc": 2100 },
-        savannah: { "20": 1200, "40hc": 1600, "45hc": 1950 },
+        tampa: { "20": 1600, "40hc": 2000, "45hc": 2200 },
+        titusville: { "20": 1600, "40hc": 1900, "45hc": 2100 },
+        savannah: { "20": 1250, "40hc": 1650, "45hc": 2000 },
         jacksonville: { "20": 1650, "40hc": 2000 }
     },
     // Precios de contenedores NUEVOS (compra) — solo 20' y 40', sin Titusville
