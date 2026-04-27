@@ -107,33 +107,36 @@ const PRICING = {
         tampa: { "20": 1600, "40hc": 2000, "45hc": 2200 },
         titusville: { "20": 1600, "40hc": 1900, "45hc": 2100 },
         savannah: { "20": 1250, "40hc": 1650, "45hc": 2000 },
-        jacksonville: { "20": 1650, "40hc": 2000 }
+        jacksonville: { "20": 1650, "40hc": 2000 },
+        atlanta: { "20": 1600, "40hc": 1950 }
     },
     // Precios de contenedores NUEVOS (compra) — solo 20' y 40', sin Titusville
     buy_new: {
-        miami: { "20": 2350, "40hc": 3450 },
-        tampa: { "20": 2600, "40hc": 3700 },
-        jacksonville: { "20": 2650, "40hc": 3650 },
-        savannah: { "20": 2300, "40hc": 3300 }
+        miami: { "20": 2350, "40hc": 3350 },
+        tampa: { "20": 2750, "40hc": 3750 },
+        jacksonville: { "20": 2950, "40hc": 3950 },
+        savannah: { "20": 2450, "40hc": 3450 }
     },
     rent: {
         miami: { "20": 150, "40hc": 250, "45hc": 280 },
         tampa: { "20": 150, "40hc": 250, "45hc": 280 },
         titusville: { "20": 150, "40hc": 250, "45hc": 280 },
         savannah: { "20": 150, "40hc": 250, "45hc": 280 },
-        jacksonville: { "20": 150, "40hc": 250 }
+        jacksonville: { "20": 150, "40hc": 250 },
+        atlanta: { "20": 150, "40hc": 250 }
     }
 };
 
 // Ubicaciones donde NO hay contenedores nuevos disponibles
-const NO_NEW_LOCATIONS = ['titusville'];
+const NO_NEW_LOCATIONS = ['titusville', 'atlanta'];
 
 const LOCATIONS = {
     miami: { lat: 25.8229, lon: -80.4005 },       // 33178
     tampa: { lat: 27.9398, lon: -82.3768 },       // 33619
     titusville: { lat: 28.5830, lon: -80.8197 },  // 32780
     savannah: { lat: 32.1281, lon: -81.2050 },    // 31408
-    jacksonville: { lat: 30.3944, lon: -81.5619 } // 32218
+    jacksonville: { lat: 30.3944, lon: -81.5619 }, // 32218
+    atlanta: { lat: 33.6393, lon: -84.3396 }      // 30288
 };
 
 // Fórmula Haversine modificada (+ 20% para aproximar rutas terrestres)
@@ -285,7 +288,7 @@ function updateContainerOptions() {
     for (let i = 0; i < tc.options.length; i++) {
         const val = tc.options[i].value;
         if (val === '45hc') {
-            const hide45 = currentLoc === 'tampa' || currentLoc === 'titusville' || currentLoc === 'jacksonville' || isNew;
+            const hide45 = currentLoc === 'tampa' || currentLoc === 'titusville' || currentLoc === 'jacksonville' || currentLoc === 'atlanta' || isNew;
             tc.options[i].style.display = hide45 ? 'none' : '';
             if (hide45 && tc.value === '45hc') tc.value = '40hc';
         }
@@ -446,7 +449,7 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
     const locNames = {
         miami: 'Miami (33178)', tampa: 'Tampa (33619)',
         titusville: 'Titusville (32780)', savannah: 'Savannah (31408)',
-        jacksonville: 'Jacksonville (32218)'
+        jacksonville: 'Jacksonville (32218)', atlanta: 'Atlanta (30288)'
     };
     const typeNames = {
         '20': "20' Estándar / Standard",
