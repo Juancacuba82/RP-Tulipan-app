@@ -10,6 +10,7 @@ const i18n = {
         condNew: "Nuevo",
         condUsed: "Usado",
         locLabel: "Ubicación de Retiro",
+        locBanner: "Para asegurar el mejor precio, seleccione la ubicación más cercana a su dirección.",
         typeLabel: "Tamaño del Contenedor",
         type20: "20' Estándar",
         type40hc: "40' High Cube (HC)",
@@ -56,6 +57,7 @@ const i18n = {
         condNew: "New",
         condUsed: "Used",
         locLabel: "Pickup Location",
+        locBanner: "To secure the best pricing, please select the location nearest to your address.",
         typeLabel: "Container Size",
         type20: "20' Standard",
         type40hc: "40' High Cube (HC)",
@@ -169,6 +171,7 @@ const els = {
     condNew: document.getElementById('t-cond-new'),
     condUsed: document.getElementById('t-cond-used'),
     locLabel: document.getElementById('t-label-location'),
+    locBanner: document.getElementById('t-banner-location'),
     typeLabel: document.getElementById('t-label-type'),
     useLabel: document.getElementById('t-label-use'),
     useNational: document.getElementById('t-use-national'),
@@ -199,6 +202,7 @@ function setLanguage(lang) {
     els.condNew.innerText = d.condNew;
     els.condUsed.innerText = d.condUsed;
     els.locLabel.innerText = d.locLabel;
+    els.locBanner.innerText = d.locBanner;
     els.typeLabel.innerText = d.typeLabel;
 
     if (els.useLabel) els.useLabel.innerText = d.useLabel;
