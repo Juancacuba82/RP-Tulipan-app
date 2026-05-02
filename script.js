@@ -105,7 +105,7 @@ const PRICING = {
         tampa: { "20": 1600, "40hc": 2000, "45hc": 2200 },
         titusville: { "20": 1600, "40hc": 1900, "45hc": 2100 },
         savannah: { "20": 1250, "40hc": 1650, "45hc": 2000 },
-        jacksonville: { "20": 1650, "40hc": 2000 },
+        jacksonville: { "20": 1600, "40hc": 1900 },
         atlanta: { "20": 1600, "40hc": 1950 }
     },
     // Precios de contenedores NUEVOS (compra) — solo 20' y 40', sin Titusville
@@ -115,18 +115,26 @@ const PRICING = {
         jacksonville: { "20": 2950, "40hc": 3950 },
         savannah: { "20": 2450, "40hc": 3450 }
     },
-    rent: {
-        miami: { "20": 150, "40hc": 250, "45hc": 280 },
-        tampa: { "20": 150, "40hc": 250, "45hc": 280 },
-        titusville: { "20": 150, "40hc": 250, "45hc": 280 },
-        savannah: { "20": 150, "40hc": 250, "45hc": 280 },
+    // Precios de alquiler de contenedores USADOS
+    rent_used: {
+        miami: { "20": 150, "40hc": 250, "45hc": 300 },
+        tampa: { "20": 150, "40hc": 250, "45hc": 300 },
+        titusville: { "20": 150, "40hc": 250, "45hc": 300 },
+        savannah: { "20": 150, "40hc": 250, "45hc": 300 },
         jacksonville: { "20": 150, "40hc": 250 },
         atlanta: { "20": 150, "40hc": 250 }
+    },
+    // Precios de alquiler de contenedores NUEVOS
+    rent_new: {
+        miami: { "20": 225, "40hc": 350 },
+        tampa: { "20": 225, "40hc": 350 },
+        jacksonville: { "20": 225, "40hc": 350 },
+        savannah: { "20": 225, "40hc": 350 },
+        atlanta: { "20": 225, "40hc": 350 }
     }
 };
 
 // Ubicaciones donde NO hay contenedores nuevos disponibles
-const NO_NEW_LOCATIONS = ['titusville', 'atlanta'];
 
 const LOCATIONS = {
     miami: { lat: 25.8229, lon: -80.4005 },       // 33178
@@ -245,22 +253,19 @@ function updateContainerOptions() {
     const tc = document.getElementById('container-type');
     const condition = document.querySelector('input[name="condition"]:checked').value;
 
-    // Mostrar u ocultar grupo de condición (nuevo/usado) según el modo
+    // Mostrar u ocultar grupo de condición (nuevo/usado) (ahora siempre visible para ambos)
     const useTypeGroup = document.getElementById('use-type-group');
+    els.condGroup.classList.remove('hidden');
+
     if (mode === 'buy') {
-        els.condGroup.classList.remove('hidden');
         if (useTypeGroup) useTypeGroup.classList.remove('hidden');
     } else {
-        els.condGroup.classList.add('hidden');
-        // En alquiler siempre reseteamos a 'used' (no aplica new)
-        document.getElementById('cond-used').checked = true;
-
         // En alquiler ocultamos tipo de uso y reseteamos a use-national
         if (useTypeGroup) useTypeGroup.classList.add('hidden');
         document.getElementById('use-type').value = 'national';
     }
 
-    const isNew = condition === 'new' && mode === 'buy';
+    const isNew = condition === 'new';
 
     // Ocultar ubicaciones que no tienen contenedores nuevos
     const locSelect = document.getElementById('location');
@@ -268,13 +273,22 @@ function updateContainerOptions() {
 
     for (let i = 0; i < locSelect.options.length; i++) {
         const optionVal = locSelect.options[i].value;
-        if (NO_NEW_LOCATIONS.includes(optionVal)) {
-            locSelect.options[i].style.display = isNew ? 'none' : '';
-            if (isNew && loc === optionVal) {
-                // Seleccionar Miami por defecto si el usuario estaba en una ubicación no válida
-                locSelect.value = 'miami';
-                locationChanged = true;
+        let shouldHide = false;
+
+        if (isNew) {
+            if (optionVal === 'titusville') {
+                shouldHide = true;
+            } else if (optionVal === 'atlanta' && mode === 'buy') {
+                shouldHide = true;
             }
+        }
+
+        locSelect.options[i].style.display = shouldHide ? 'none' : '';
+
+        if (shouldHide && loc === optionVal) {
+            // Seleccionar Miami por defecto si el usuario estaba en una ubicación no válida
+            locSelect.value = 'miami';
+            locationChanged = true;
         }
     }
 
@@ -362,7 +376,7 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
 
     // Remove redundant selector by reusing the let or just not redeclaring in block
     const condVal = document.querySelector('input[name="condition"]:checked').value;
-    const pricingKey = mode === 'buy' ? `buy_${condVal}` : 'rent';
+    const pricingKey = `${mode}_${condVal}`;
     const baseCost = PRICING[pricingKey][loc][type];
 
     // Si alquilan, se cobra viaje de ida y viaje de recogida
