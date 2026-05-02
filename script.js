@@ -31,8 +31,6 @@ const i18n = {
         distLabel: "Distancia estimada:",
         milesUnit: "millas",
         disclaim: "* Los precios mostrados son estimaciones basadas en nuestras tarifas base. La tarifa final será confirmada formalmente.",
-        resDiscount: "🎉 Descuento App",
-        promoBanner: "🎉 ¡Aprovecha! Tienes un descuento de <strong>$100</strong> exclusivo alquilando o comprando desde la aplicación.",
         waBtn: "📲 Obtener confirmación del precio",
         waMsg: (mode, loc, type, useTypeStr, zip, miles, base, transport, exportFee, total) =>
             `Hola! Me interesa la siguiente cotización:\n` +
@@ -79,8 +77,6 @@ const i18n = {
         distLabel: "Estimated distance:",
         milesUnit: "miles",
         disclaim: "* Prices shown are estimates based on our standard rates. The exact rate will be formally confirmed.",
-        resDiscount: "🎉 App Discount",
-        promoBanner: "🎉 Special offer! You have an exclusive <strong>$100</strong> discount when renting or buying through the app.",
         waBtn: "📲 Get Price Confirmation",
         waMsg: (mode, loc, type, useTypeStr, zip, miles, base, transport, exportFee, total) =>
             `Hello! I'm interested in the following quote:\n` +
@@ -226,9 +222,6 @@ function setLanguage(lang) {
     els.resMilesLab.innerText = d.distLabel;
     els.disclaim.innerText = d.disclaim;
 
-    const promo = document.querySelector('.promo-banner');
-    if (promo) promo.innerHTML = d.promoBanner;
-
     els.zipError.innerText = d.errZip; // Prepare error text just in case
 }
 
@@ -294,17 +287,6 @@ function updateContainerOptions() {
         }
     }
 
-    // Ocultar banner de descuento si es Miami (33178)
-    const promo = document.querySelector('.promo-banner');
-    if (promo) {
-        if (currentLoc === 'miami') {
-            promo.classList.add('hidden');
-            promo.style.display = 'none';
-        } else {
-            promo.classList.remove('hidden');
-            promo.style.display = 'block';
-        }
-    }
 }
 
 document.getElementById('location').addEventListener('change', updateContainerOptions);
@@ -403,22 +385,7 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
 
     const totalCost = baseCost + transportCost + exportFeeValue;
 
-    // Descuento $100 para alquiler y compra (excepto en Miami 33178)
-    const DISCOUNT = (loc.trim().toLowerCase() === 'miami') ? 0 : 100;
-    const finalTotal = totalCost - DISCOUNT;
-
-    // Mostrar / ocultar fila de descuento
-    const discountRow = document.getElementById('discount-row');
-    const discountLabel = document.getElementById('t-res-discount');
-    if (DISCOUNT > 0) {
-        discountLabel.innerText = d.resDiscount;
-        document.getElementById('val-discount').innerText = '-' + formatCurrency(DISCOUNT);
-        discountRow.classList.remove('hidden');
-        discountRow.style.display = 'flex';
-    } else {
-        discountRow.classList.add('hidden');
-        discountRow.style.display = 'none';
-    }
+    const finalTotal = totalCost;
 
     let mesSuffix = mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : '';
 
@@ -481,9 +448,8 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
         Math.round(distance),
         formatCurrency(baseCost) + (mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : ''),
         formatCurrency(transportCost),
-        exportFeeFormatted,
         totalDisplay
-    ) + (DISCOUNT > 0 ? `\n• ${d.resDiscount} aplicado: -${formatCurrency(DISCOUNT)}` : '');
+    );
 
     const waBtn = document.getElementById('wa-btn');
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

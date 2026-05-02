@@ -90,52 +90,6 @@ body {
     border-color: #D0D0D0;
 }
 
-/* Promo Banner (below zip field) */
-.promo-banner {
-    margin-top: 10px;
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: var(--primary-dark);
-    background: #fff5f5;
-    border: 1px solid rgba(239, 62, 66, 0.2);
-    border-radius: 10px;
-    padding: 9px 14px;
-    line-height: 1.4;
-    animation: promoPulse 3s ease-in-out infinite;
-}
-
-.promo-banner strong {
-    font-weight: 800;
-    color: var(--primary);
-}
-
-@keyframes promoPulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 0 0 rgba(239, 62, 66, 0);
-    }
-
-    50% {
-        box-shadow: 0 0 0 4px rgba(239, 62, 66, 0.12);
-    }
-}
-
-/* Discount Row */
-.discount-row {
-    color: #16a34a !important;
-    font-weight: 600;
-    background: #f0fdf4;
-    border-radius: 8px;
-    padding: 6px 10px;
-    margin-bottom: 10px !important;
-}
-
-.discount-value {
-    color: #16a34a !important;
-    font-weight: 700 !important;
-}
-
 /* Hero Section */
 .hero {
     min-height: 100vh;
