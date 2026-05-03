@@ -13,6 +13,7 @@ const i18n = {
         locBanner: "Para asegurar el mejor precio, seleccione la ubicación más cercana a su dirección.",
         typeLabel: "Tamaño del Contenedor",
         type20: "20' Estándar",
+        type40st: "40' Estándar",
         type40hc: "40' High Cube (HC)",
         type45hc: "45' High Cube (HC)",
         useLabel: "Tipo de Uso",
@@ -60,6 +61,7 @@ const i18n = {
         locBanner: "To secure the best pricing, please select the location nearest to your address.",
         typeLabel: "Container Size",
         type20: "20' Standard",
+        type40st: "40' Standard",
         type40hc: "40' High Cube (HC)",
         type45hc: "45' High Cube (HC)",
         useLabel: "Type of Use",
@@ -101,12 +103,12 @@ let currentLang = 'en';
 const PRICING = {
     // Precios de contenedores USADOS (compra)
     buy_used: {
-        miami: { "20": 1300, "40hc": 1650, "45hc": 2000 },
-        tampa: { "20": 1600, "40hc": 2000, "45hc": 2200 },
-        titusville: { "20": 1600, "40hc": 1900, "45hc": 2100 },
-        savannah: { "20": 1250, "40hc": 1650, "45hc": 2000 },
-        jacksonville: { "20": 1600, "40hc": 1900 },
-        atlanta: { "20": 1600, "40hc": 1950 }
+        miami: { "20": 1300, "40st": 1600, "40hc": 1650, "45hc": 2100 },
+        tampa: { "20": 1600, "40st": 1950, "40hc": 2000, "45hc": 2200 },
+        titusville: { "20": 1700, "40st": 1950, "40hc": 2000, "45hc": 2100 },
+        savannah: { "20": 1250, "40st": 1600, "40hc": 1650, "45hc": 1850 },
+        jacksonville: { "20": 1600, "40st": 1850, "40hc": 1900 },
+        atlanta: { "20": 1600, "40st": 1900, "40hc": 1950 }
     },
     // Precios de contenedores NUEVOS (compra) — solo 20' y 40', sin Titusville
     buy_new: {
@@ -117,17 +119,18 @@ const PRICING = {
     },
     // Precios de alquiler de contenedores USADOS
     rent_used: {
-        miami: { "20": 150, "40hc": 250, "45hc": 300 },
-        tampa: { "20": 150, "40hc": 250, "45hc": 300 },
-        titusville: { "20": 150, "40hc": 250, "45hc": 300 },
-        savannah: { "20": 150, "40hc": 250, "45hc": 300 },
-        jacksonville: { "20": 150, "40hc": 250 },
-        atlanta: { "20": 150, "40hc": 250 }
+        miami: { "20": 150, "40st": 225, "40hc": 250, "45hc": 300 },
+        tampa: { "20": 150, "40st": 225, "40hc": 250, "45hc": 300 },
+        titusville: { "20": 150, "40st": 225, "40hc": 250, "45hc": 300 },
+        savannah: { "20": 150, "40st": 225, "40hc": 250, "45hc": 300 },
+        jacksonville: { "20": 150, "40st": 225, "40hc": 250 },
+        atlanta: { "20": 150, "40st": 225, "40hc": 250 }
     },
     // Precios de alquiler de contenedores NUEVOS
     rent_new: {
         miami: { "20": 225, "40hc": 350 },
         tampa: { "20": 225, "40hc": 350 },
+        titusville: { "20": 225, "40hc": 350 },
         jacksonville: { "20": 225, "40hc": 350 },
         savannah: { "20": 225, "40hc": 350 },
         atlanta: { "20": 225, "40hc": 350 }
@@ -220,8 +223,9 @@ function setLanguage(lang) {
     // Select options logic
     const tc = document.getElementById('container-type');
     tc.options[0].text = d.type20;
-    tc.options[1].text = d.type40hc;
-    tc.options[2].text = d.type45hc;
+    tc.options[1].text = d.type40st;
+    tc.options[2].text = d.type40hc;
+    tc.options[3].text = d.type45hc;
 
     els.zipLabel.innerText = d.zipLabel;
     els.zipHint.innerText = d.zipHint;
@@ -276,9 +280,16 @@ function updateContainerOptions() {
         let shouldHide = false;
 
         if (isNew) {
-            if (optionVal === 'titusville') {
+            if (optionVal === 'titusville' && mode === 'buy') {
                 shouldHide = true;
             } else if (optionVal === 'atlanta' && mode === 'buy') {
+                shouldHide = true;
+            }
+        }
+
+        // Restringir renta solo a Jacksonville, Titusville, Tampa y Miami (Ocultar Savannah y Atlanta)
+        if (mode === 'rent') {
+            if (optionVal === 'savannah' || optionVal === 'atlanta') {
                 shouldHide = true;
             }
         }
@@ -302,6 +313,11 @@ function updateContainerOptions() {
             const hide45 = currentLoc === 'tampa' || currentLoc === 'titusville' || currentLoc === 'jacksonville' || currentLoc === 'atlanta' || isNew;
             tc.options[i].style.display = hide45 ? 'none' : '';
             if (hide45 && tc.value === '45hc') tc.value = '40hc';
+        }
+        if (val === '40st') {
+            const hide40st = isNew;
+            tc.options[i].style.display = hide40st ? 'none' : '';
+            if (hide40st && tc.value === '40st') tc.value = '20';
         }
     }
 
@@ -438,6 +454,7 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
     };
     const typeNames = {
         '20': "20' Estándar / Standard",
+        '40st': "40' Estándar / Standard",
         '40hc': "40' High Cube (HC)",
         '45hc': "45' High Cube (HC)"
     };
