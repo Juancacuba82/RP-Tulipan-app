@@ -29,12 +29,13 @@ const i18n = {
         resTrans: "Costo de Transporte (Envío)",
         resTransRent: "Costo de Transporte (Envío y Recogida)",
         resExportFee: "Cargo por Exportación (SOC)",
+        resDiscount: "Descuento (15% OFF)",
         resTot: "Total Estimado",
         distLabel: "Distancia estimada:",
         milesUnit: "millas",
         disclaim: "* Los precios mostrados son estimaciones basadas en nuestras tarifas base. La tarifa final será confirmada formalmente.",
         waBtn: "📲 Obtener confirmación del precio",
-        waMsg: (mode, loc, type, useTypeStr, zip, miles, base, transport, exportFee, total) =>
+        waMsg: (mode, loc, type, useTypeStr, zip, miles, base, transport, exportFee, discount, total) =>
             `Hola! Me interesa la siguiente cotización:\n` +
             `• Modalidad: ${mode}\n` +
             `• Tipo de uso: ${useTypeStr}\n` +
@@ -44,6 +45,7 @@ const i18n = {
             `• Costo base del contenedor: ${base}\n` +
             `• Costo de transporte: ${transport}\n` +
             (exportFee ? `• Cargo por exportación: ${exportFee}\n` : ``) +
+            `• Descuento (15% OFF): -${discount}\n` +
             `• *TOTAL ESTIMADO: ${total}*\n\n` +
             `¿Pueden confirmarme esta cotización? Gracias!`
     },
@@ -77,12 +79,13 @@ const i18n = {
         resTrans: "Transport Cost (Delivery)",
         resTransRent: "Transport Cost (Delivery & Pickup)",
         resExportFee: "Export Fee (SOC)",
+        resDiscount: "Discount (15% OFF)",
         resTot: "Estimated Total",
         distLabel: "Estimated distance:",
         milesUnit: "miles",
         disclaim: "* Prices shown are estimates based on our standard rates. The exact rate will be formally confirmed.",
         waBtn: "📲 Get Price Confirmation",
-        waMsg: (mode, loc, type, useTypeStr, zip, miles, base, transport, exportFee, total) =>
+        waMsg: (mode, loc, type, useTypeStr, zip, miles, base, transport, exportFee, discount, total) =>
             `Hello! I'm interested in the following quote:\n` +
             `• Mode: ${mode}\n` +
             `• Use Type: ${useTypeStr}\n` +
@@ -92,6 +95,7 @@ const i18n = {
             `• Base container cost: ${base}\n` +
             `• Transport cost: ${transport}\n` +
             (exportFee ? `• Export fee: ${exportFee}\n` : ``) +
+            `• Discount (15% OFF): -${discount}\n` +
             `• *ESTIMATED TOTAL: ${total}*\n\n` +
             `Can you confirm this quote? Thank you!`
     }
@@ -103,37 +107,37 @@ let currentLang = 'en';
 const PRICING = {
     // Precios de contenedores USADOS (compra)
     buy_used: {
-        miami: { "20": 1300, "40st": 1600, "40hc": 1650, "45hc": 1850 },
-        tampa: { "20": 1600, "40st": 1950, "40hc": 2000, "45hc": 2200 },
-        titusville: { "20": 1700, "40st": 1950, "40hc": 2000, "45hc": 2100 },
-        savannah: { "20": 1250, "40st": 1600, "40hc": 1650, "45hc": 1850 },
-        jacksonville: { "20": 1600, "40st": 1850, "40hc": 1900 },
-        atlanta: { "20": 1600, "40st": 1900, "40hc": 1950 }
+        miami: { "20": 1495, "40st": 1840, "40hc": 1897.5, "45hc": 2127.5 },
+        tampa: { "20": 1840, "40st": 2242.5, "40hc": 2300, "45hc": 2530 },
+        titusville: { "20": 1955, "40st": 2242.5, "40hc": 2300, "45hc": 2415 },
+        savannah: { "20": 1437.5, "40st": 1840, "40hc": 1897.5, "45hc": 2127.5 },
+        jacksonville: { "20": 1840, "40st": 2127.5, "40hc": 2185 },
+        atlanta: { "20": 1840, "40st": 2185, "40hc": 2242.5 }
     },
     // Precios de contenedores NUEVOS (compra) — solo 20' y 40', sin Titusville
     buy_new: {
-        miami: { "20": 2350, "40hc": 3350 },
-        tampa: { "20": 2750, "40hc": 3750 },
-        jacksonville: { "20": 2950, "40hc": 3950 },
-        savannah: { "20": 2450, "40hc": 3450 }
+        miami: { "20": 2702.5, "40hc": 3852.5 },
+        tampa: { "20": 3162.5, "40hc": 4312.5 },
+        jacksonville: { "20": 3392.5, "40hc": 4542.5 },
+        savannah: { "20": 2817.5, "40hc": 3967.5 }
     },
     // Precios de alquiler de contenedores USADOS
     rent_used: {
-        miami: { "20": 150, "40st": 225, "40hc": 250, "45hc": 300 },
-        tampa: { "20": 150, "40st": 225, "40hc": 250, "45hc": 300 },
-        titusville: { "20": 150, "40st": 225, "40hc": 250, "45hc": 300 },
-        savannah: { "20": 150, "40st": 225, "40hc": 250, "45hc": 300 },
-        jacksonville: { "20": 150, "40st": 225, "40hc": 250 },
-        atlanta: { "20": 150, "40st": 225, "40hc": 250 }
+        miami: { "20": 172.5, "40st": 258.75, "40hc": 287.5, "45hc": 345 },
+        tampa: { "20": 172.5, "40st": 258.75, "40hc": 287.5, "45hc": 345 },
+        titusville: { "20": 172.5, "40st": 258.75, "40hc": 287.5, "45hc": 345 },
+        savannah: { "20": 172.5, "40st": 258.75, "40hc": 287.5, "45hc": 345 },
+        jacksonville: { "20": 172.5, "40st": 258.75, "40hc": 287.5 },
+        atlanta: { "20": 172.5, "40st": 258.75, "40hc": 287.5 }
     },
     // Precios de alquiler de contenedores NUEVOS
     rent_new: {
-        miami: { "20": 225, "40hc": 350 },
-        tampa: { "20": 225, "40hc": 350 },
-        titusville: { "20": 225, "40hc": 350 },
-        jacksonville: { "20": 225, "40hc": 350 },
-        savannah: { "20": 225, "40hc": 350 },
-        atlanta: { "20": 225, "40hc": 350 }
+        miami: { "20": 258.75, "40hc": 402.5 },
+        tampa: { "20": 258.75, "40hc": 402.5 },
+        titusville: { "20": 258.75, "40hc": 402.5 },
+        jacksonville: { "20": 258.75, "40hc": 402.5 },
+        savannah: { "20": 258.75, "40hc": 402.5 },
+        atlanta: { "20": 258.75, "40hc": 402.5 }
     }
 };
 
@@ -195,6 +199,7 @@ const els = {
     resCont: document.getElementById('t-res-container'),
     resTrans: document.getElementById('t-res-transport'),
     resExportFee: document.getElementById('t-res-export-fee'),
+    resDiscount: document.getElementById('t-res-discount'),
     resTot: document.getElementById('t-res-total'),
     resMilesLab: document.getElementById('t-res-miles'),
     valMiles: document.getElementById('val-miles'),
@@ -234,6 +239,7 @@ function setLanguage(lang) {
     els.resCont.innerText = d.resCont;
     // resTrans se determinará en el cálculo según el modo seleccionado
     if (els.resExportFee) els.resExportFee.innerText = d.resExportFee;
+    if (els.resDiscount) els.resDiscount.innerText = d.resDiscount;
     els.resTot.innerText = d.resTot;
     els.resMilesLab.innerText = d.distLabel;
     els.disclaim.innerText = d.disclaim;
@@ -253,74 +259,50 @@ els.langBtn.addEventListener('click', () => {
 
 function updateContainerOptions() {
     const mode = document.querySelector('input[name="mode"]:checked').value;
-    const loc = document.getElementById('location').value;
     const tc = document.getElementById('container-type');
     const condition = document.querySelector('input[name="condition"]:checked').value;
 
-    // Mostrar u ocultar grupo de condición (nuevo/usado) (ahora siempre visible para ambos)
     const useTypeGroup = document.getElementById('use-type-group');
     els.condGroup.classList.remove('hidden');
 
     if (mode === 'buy') {
         if (useTypeGroup) useTypeGroup.classList.remove('hidden');
     } else {
-        // En alquiler ocultamos tipo de uso y reseteamos a use-national
         if (useTypeGroup) useTypeGroup.classList.add('hidden');
         document.getElementById('use-type').value = 'national';
     }
 
     const isNew = condition === 'new';
+    const pricingKey = `${mode}_${condition}`;
 
-    // Ocultar ubicaciones que no tienen contenedores nuevos
-    const locSelect = document.getElementById('location');
-    let locationChanged = false;
-
-    for (let i = 0; i < locSelect.options.length; i++) {
-        const optionVal = locSelect.options[i].value;
-        let shouldHide = false;
-
-        if (isNew) {
-            if (optionVal === 'titusville' && mode === 'buy') {
-                shouldHide = true;
-            } else if (optionVal === 'atlanta' && mode === 'buy') {
-                shouldHide = true;
-            }
-        }
-
-        // Restringir renta solo a Jacksonville, Titusville, Tampa y Miami (Ocultar Savannah y Atlanta)
-        if (mode === 'rent') {
-            if (optionVal === 'savannah' || optionVal === 'atlanta') {
-                shouldHide = true;
-            }
-        }
-
-        locSelect.options[i].style.display = shouldHide ? 'none' : '';
-
-        if (shouldHide && loc === optionVal) {
-            // Seleccionar Miami por defecto si el usuario estaba en una ubicación no válida
-            locSelect.value = 'miami';
-            locationChanged = true;
-        }
-    }
-
-    // Actualizar loc en caso de que lo hayamos cambiado para que la validación de contenedores HC use el correcto
-    const currentLoc = locationChanged ? 'miami' : loc;
-
-    // Si es contenedor NUEVO: solo 20' y 40', sin 45'.
+    // Actualizar disponibilidad de tipos de contenedor basándose en si existe en AL MENOS una ubicación válida
     for (let i = 0; i < tc.options.length; i++) {
-        const val = tc.options[i].value;
-        if (val === '45hc') {
-            const hide45 = currentLoc === 'tampa' || currentLoc === 'titusville' || currentLoc === 'jacksonville' || currentLoc === 'atlanta' || isNew;
-            tc.options[i].style.display = hide45 ? 'none' : '';
-            if (hide45 && tc.value === '45hc') tc.value = '40hc';
+        const type = tc.options[i].value;
+        let isAvailable = false;
+
+        for (const loc in PRICING[pricingKey]) {
+            // Validar si la ubicación es permitida para este modo
+            let locValid = true;
+            if (mode === 'rent' && (loc === 'savannah' || loc === 'atlanta')) locValid = false;
+            if (isNew && mode === 'buy' && (loc === 'titusville' || loc === 'atlanta')) locValid = false;
+
+            if (locValid && PRICING[pricingKey][loc][type] !== undefined) {
+                isAvailable = true;
+                break;
+            }
         }
-        if (val === '40st') {
-            const hide40st = isNew;
-            tc.options[i].style.display = hide40st ? 'none' : '';
-            if (hide40st && tc.value === '40st') tc.value = '20';
+
+        tc.options[i].style.display = isAvailable ? '' : 'none';
+        if (!isAvailable && tc.value === type) {
+            // Si el seleccionado ya no es válido, buscar el primero disponible
+            for (let j = 0; j < tc.options.length; j++) {
+                if (tc.options[j].style.display !== 'none') {
+                    tc.value = tc.options[j].value;
+                    break;
+                }
+            }
         }
     }
-
 }
 
 document.getElementById('location').addEventListener('change', updateContainerOptions);
@@ -346,157 +328,145 @@ document.getElementById('quote-form').addEventListener('submit', async (e) => {
     els.btnCalc.innerText = d.calcLoading;
 
     const mode = document.querySelector('input[name="mode"]:checked').value;
-    const loc = document.getElementById('location').value;
     const type = document.getElementById('container-type').value;
     const useType = document.getElementById('use-type').value;
     const zip = document.getElementById('zipcode').value;
-
-    let distance = 0;
+    const condVal = document.querySelector('input[name="condition"]:checked').value;
 
     try {
-        const response = await fetch(`https://api.zippopotam.us/us/${zip}`);
-        if (!response.ok) throw new Error("Zip not found");
-        const data = await response.json();
+        const zipResponse = await fetch(`https://api.zippopotam.us/us/${zip}`);
+        if (!zipResponse.ok) throw new Error("Zip not found");
+        const zipData = await zipResponse.json();
 
-        const destLat = parseFloat(data.places[0].latitude);
-        const destLon = parseFloat(data.places[0].longitude);
-        const origin = LOCATIONS[loc];
+        const destLat = parseFloat(zipData.places[0].latitude);
+        const destLon = parseFloat(zipData.places[0].longitude);
 
-        // 1. Obtener la ruta de manejo real usando la API pública OSRM (Open Source Routing Machine)
-        try {
-            const osrmRes = await fetch(`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${destLon},${destLat}?overview=false`);
-            if (!osrmRes.ok) throw new Error("OSRM failed");
-            const osrmData = await osrmRes.json();
+        const pricingKey = `${mode}_${condVal}`;
+        const validLocations = Object.keys(LOCATIONS).filter(loc => {
+            // Verificar si el tipo existe en el pricing para esta ubicación
+            if (!PRICING[pricingKey][loc] || PRICING[pricingKey][loc][type] === undefined) return false;
+            // Restricciones de negocio
+            if (mode === 'rent' && (loc === 'savannah' || loc === 'atlanta')) return false;
+            if (condVal === 'new' && mode === 'buy' && (loc === 'titusville' || loc === 'atlanta')) return false;
+            return true;
+        });
 
-            if (osrmData.routes && osrmData.routes.length > 0) {
-                // La distancia viene en metros, la convertimos a millas reales de conducción
-                distance = osrmData.routes[0].distance / 1609.344;
-            } else {
-                throw new Error("No route found");
+        if (validLocations.length === 0) throw new Error("No available locations");
+
+        // Calcular distancia y precio para todas las ubicaciones válidas en paralelo
+        const results = await Promise.all(validLocations.map(async (loc) => {
+            const origin = LOCATIONS[loc];
+            let distance = 0;
+            try {
+                const osrmRes = await fetch(`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${destLon},${destLat}?overview=false`);
+                if (!osrmRes.ok) throw new Error("OSRM failed");
+                const osrmData = await osrmRes.json();
+                if (osrmData.routes && osrmData.routes.length > 0) {
+                    distance = osrmData.routes[0].distance / 1609.344;
+                } else {
+                    throw new Error("No route found");
+                }
+            } catch (e) {
+                distance = getDistanceInMiles(origin.lat, origin.lon, destLat, destLon);
             }
-        } catch (e) {
-            // FALLBACK: Si OSRM falla, usamos la fórmula matemática original ajustada
-            distance = getDistanceInMiles(origin.lat, origin.lon, destLat, destLon);
+
+            const baseCost = PRICING[pricingKey][loc][type];
+            let transportCost = calculateTransport(distance);
+            if (mode === 'rent') transportCost *= 2;
+
+            return { loc, distance, baseCost, transportCost, total: baseCost + transportCost };
+        }));
+
+        // Encontrar la opción con el costo TOTAL más bajo
+        const best = results.reduce((prev, curr) => (prev.total < curr.total ? prev : curr));
+
+        // Formateador de moneda (USD)
+        const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+
+        let exportFeeValue = 0;
+        const exportFeeRow = document.getElementById('export-fee-row');
+        if (useType === 'export' && mode === 'buy') {
+            exportFeeValue = 250;
+            exportFeeRow.style.setProperty('display', 'flex', 'important');
+            document.getElementById('val-export-fee').innerText = '+' + formatCurrency(exportFeeValue);
+        } else {
+            exportFeeRow.style.setProperty('display', 'none', 'important');
         }
 
+        const discountableAmount = best.baseCost + exportFeeValue;
+        const discountValue = discountableAmount * 0.15;
+        const finalTotal = discountableAmount - discountValue + best.transportCost;
+
+        let mesSuffix = mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : '';
+
+        document.getElementById('val-base').innerText = formatCurrency(best.baseCost) + mesSuffix;
+        document.getElementById('val-transport').innerText = formatCurrency(best.transportCost);
+        document.getElementById('val-discount').innerText = '-' + formatCurrency(discountValue);
+        els.valMiles.innerText = `${Math.round(best.distance)} ${d.milesUnit}`;
+
+        let initialTotalText = mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '';
+        document.getElementById('val-total').innerText = formatCurrency(finalTotal) + initialTotalText;
+
+        const resBox = document.getElementById('result-box');
+        resBox.classList.remove('hidden');
+        resBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // --- Botón de WhatsApp ---
+        const WHATSAPP_NUMBER = '+17867684409';
+        const locNames = {
+            miami: 'Miami (33178)', tampa: 'Tampa (33619)',
+            titusville: 'Titusville (32780)', savannah: 'Savannah (31408)',
+            jacksonville: 'Jacksonville (32218)', atlanta: 'Atlanta (30288)'
+        };
+        const typeNames = {
+            '20': "20' Estándar / Standard",
+            '40st': "40' Estándar / Standard",
+            '40hc': "40' High Cube (HC)",
+            '45hc': "45' High Cube (HC)"
+        };
+        const condDisplay = condVal === 'new'
+            ? (currentLang === 'es' ? 'Nuevo' : 'New')
+            : (currentLang === 'es' ? 'Usado' : 'Used');
+        const modeDisplay = mode === 'rent'
+            ? (currentLang === 'es' ? 'Alquiler (Mensual)' : 'Rent (Monthly)')
+            : (currentLang === 'es' ? `Compra (${condDisplay})` : `Purchase (${condDisplay})`);
+
+        const useTypeDisplay = useType === 'export'
+            ? 'sea worthy certificate (shipping)'
+            : 'WWT (storage)';
+
+        const exportFeeFormatted = exportFeeValue > 0 ? formatCurrency(exportFeeValue) : null;
+        const totalDisplay = formatCurrency(finalTotal) + (mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '');
+
+        const waText = d.waMsg(
+            modeDisplay,
+            locNames[best.loc],
+            typeNames[type],
+            useTypeDisplay,
+            zip,
+            Math.round(best.distance),
+            formatCurrency(best.baseCost) + (mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : ''),
+            formatCurrency(best.transportCost),
+            exportFeeFormatted,
+            formatCurrency(discountValue),
+            totalDisplay
+        );
+
+        const waBtn = document.getElementById('wa-btn');
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        waBtn.href = isMobile
+            ? `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(waText)}`
+            : `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(waText)}`;
+
+        waBtn.innerText = d.waBtn;
+        waBtn.classList.remove('hidden');
+
     } catch (err) {
-        els.btnCalc.disabled = false;
-        els.btnCalc.innerText = d.btnCalc;
+        console.error(err);
         els.zipError.innerText = d.errZip;
         els.zipError.classList.remove('hidden');
-        return;
+    } finally {
+        els.btnCalc.disabled = false;
+        els.btnCalc.innerText = d.btnCalc;
     }
-
-    els.btnCalc.disabled = false;
-    els.btnCalc.innerText = d.btnCalc;
-
-    // Remove redundant selector by reusing the let or just not redeclaring in block
-    const condVal = document.querySelector('input[name="condition"]:checked').value;
-    const pricingKey = `${mode}_${condVal}`;
-    const baseCost = PRICING[pricingKey][loc][type];
-
-    // Si alquilan, se cobra viaje de ida y viaje de recogida
-    let transportCost = calculateTransport(distance);
-    if (mode === 'rent') {
-        transportCost = transportCost * 2;
-        els.resTrans.innerText = d.resTransRent;
-    } else {
-        els.resTrans.innerText = d.resTrans;
-    }
-
-    // Formateador de moneda (USD)
-    const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
-
-    let exportFeeValue = 0;
-    const exportFeeRow = document.getElementById('export-fee-row');
-    if (useType === 'export' && mode === 'buy') {
-        exportFeeValue = 250;
-        exportFeeRow.style.setProperty('display', 'flex', 'important');
-        document.getElementById('val-export-fee').innerText = '+' + formatCurrency(exportFeeValue);
-    } else {
-        exportFeeRow.style.setProperty('display', 'none', 'important');
-    }
-
-    const totalCost = baseCost + transportCost + exportFeeValue;
-
-    const finalTotal = totalCost;
-
-    let mesSuffix = mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : '';
-
-    document.getElementById('val-base').innerText = formatCurrency(baseCost) + mesSuffix;
-    document.getElementById('val-transport').innerText = formatCurrency(transportCost);
-    els.valMiles.innerText = `${Math.round(distance)} ${d.milesUnit}`;
-
-    let initialTotalText = mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '';
-    document.getElementById('val-total').innerText = formatCurrency(finalTotal) + initialTotalText;
-
-    els.resCont.innerText = d.resCont;
-
-    const resBox = document.getElementById('result-box');
-    resBox.classList.remove('hidden');
-
-    // Mover la pantalla hacia los resultados
-    resBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    // Pequeño truco para forzar re-animación
-    resBox.style.animation = 'none';
-    resBox.offsetHeight; /* trigger reflow */
-    resBox.style.animation = null;
-
-    // --- Botón de WhatsApp ---
-    // ⚠️ Reemplaza el número de abajo con el de tu WhatsApp de negocios (con código de país, sin +)
-    const WHATSAPP_NUMBER = '+17867684409';
-
-    const locNames = {
-        miami: 'Miami (33178)', tampa: 'Tampa (33619)',
-        titusville: 'Titusville (32780)', savannah: 'Savannah (31408)',
-        jacksonville: 'Jacksonville (32218)', atlanta: 'Atlanta (30288)'
-    };
-    const typeNames = {
-        '20': "20' Estándar / Standard",
-        '40st': "40' Estándar / Standard",
-        '40hc': "40' High Cube (HC)",
-        '45hc': "45' High Cube (HC)"
-    };
-    const condVal2 = document.querySelector('input[name="condition"]:checked').value;
-    const condDisplay = condVal2 === 'new'
-        ? (currentLang === 'es' ? 'Nuevo' : 'New')
-        : (currentLang === 'es' ? 'Usado' : 'Used');
-    const modeDisplay = mode === 'rent'
-        ? (currentLang === 'es' ? 'Alquiler (Mensual)' : 'Rent (Monthly)')
-        : (currentLang === 'es' ? `Compra (${condDisplay})` : `Purchase (${condDisplay})`);
-
-    const useTypeDisplay = useType === 'export'
-        ? 'sea worthy certificate (shipping)'
-        : 'WWT (storage)';
-
-    const exportFeeFormatted = exportFeeValue > 0 ? formatCurrency(exportFeeValue) : null;
-
-    const totalDisplay = formatCurrency(finalTotal) + (mode === 'rent' ? (currentLang === 'es' ? ' (1er mes)' : ' (1st month)') : '');
-
-    const waText = d.waMsg(
-        modeDisplay,
-        locNames[loc],
-        typeNames[type],
-        useTypeDisplay,
-        zip,
-        Math.round(distance),
-        formatCurrency(baseCost) + (mode === 'rent' ? (currentLang === 'es' ? '/mes' : '/month') : ''),
-        formatCurrency(transportCost),
-        totalDisplay
-    );
-
-    const waBtn = document.getElementById('wa-btn');
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (isMobile) {
-        // En móviles, abre la app de WhatsApp directamente
-        waBtn.href = `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(waText)}`;
-    } else {
-        // En computadora, abre WhatsApp Web directamente
-        waBtn.href = `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(waText)}`;
-    }
-
-    waBtn.innerText = d.waBtn;
-    waBtn.classList.remove('hidden');
 });
