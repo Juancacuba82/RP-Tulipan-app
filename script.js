@@ -103,7 +103,7 @@ let currentLang = 'en';
 const PRICING = {
     // Precios de contenedores USADOS (compra)
     buy_used: {
-        miami: { "20": 1300, "40st": 1600, "40hc": 1650, "45hc": 2100 },
+        miami: { "20": 1300, "40st": 1600, "40hc": 1650, "45hc": 1850 },
         tampa: { "20": 1600, "40st": 1950, "40hc": 2000, "45hc": 2200 },
         titusville: { "20": 1700, "40st": 1950, "40hc": 2000, "45hc": 2100 },
         savannah: { "20": 1250, "40st": 1600, "40hc": 1650, "45hc": 1850 },
