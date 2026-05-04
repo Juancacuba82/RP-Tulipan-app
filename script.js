@@ -107,37 +107,37 @@ let currentLang = 'en';
 const PRICING = {
     // Precios de contenedores USADOS (compra)
     buy_used: {
-        miami: { "20": 1495, "40st": 1840, "40hc": 1897.5, "45hc": 2127.5 },
-        tampa: { "20": 1840, "40st": 2242.5, "40hc": 2300, "45hc": 2530 },
-        titusville: { "20": 1955, "40st": 2242.5, "40hc": 2300, "45hc": 2415 },
-        savannah: { "20": 1437.5, "40st": 1840, "40hc": 1897.5, "45hc": 2127.5 },
-        jacksonville: { "20": 1840, "40st": 2127.5, "40hc": 2185 },
-        atlanta: { "20": 1840, "40st": 2185, "40hc": 2242.5 }
+        miami: { "20": 1534, "40st": 1888, "40hc": 1947, "45hc": 2183 },
+        tampa: { "20": 1888, "40st": 2301, "40hc": 2360, "45hc": 2596 },
+        titusville: { "20": 2006, "40st": 2301, "40hc": 2360, "45hc": 2478 },
+        savannah: { "20": 1475, "40st": 1888, "40hc": 1947, "45hc": 2183 },
+        jacksonville: { "20": 1888, "40st": 2183, "40hc": 2242 },
+        atlanta: { "20": 1888, "40st": 2242, "40hc": 2301 }
     },
     // Precios de contenedores NUEVOS (compra) — solo 20' y 40', sin Titusville
     buy_new: {
-        miami: { "20": 2702.5, "40hc": 3852.5 },
-        tampa: { "20": 3162.5, "40hc": 4312.5 },
-        jacksonville: { "20": 3392.5, "40hc": 4542.5 },
-        savannah: { "20": 2817.5, "40hc": 3967.5 }
+        miami: { "20": 2773, "40hc": 3953 },
+        tampa: { "20": 3245, "40hc": 4425 },
+        jacksonville: { "20": 3481, "40hc": 4661 },
+        savannah: { "20": 2891, "40hc": 4071 }
     },
     // Precios de alquiler de contenedores USADOS
     rent_used: {
-        miami: { "20": 172.5, "40st": 258.75, "40hc": 287.5, "45hc": 345 },
-        tampa: { "20": 172.5, "40st": 258.75, "40hc": 287.5, "45hc": 345 },
-        titusville: { "20": 172.5, "40st": 258.75, "40hc": 287.5, "45hc": 345 },
-        savannah: { "20": 172.5, "40st": 258.75, "40hc": 287.5, "45hc": 345 },
-        jacksonville: { "20": 172.5, "40st": 258.75, "40hc": 287.5 },
-        atlanta: { "20": 172.5, "40st": 258.75, "40hc": 287.5 }
+        miami: { "20": 177, "40st": 265.5, "40hc": 295, "45hc": 354 },
+        tampa: { "20": 177, "40st": 265.5, "40hc": 295, "45hc": 354 },
+        titusville: { "20": 177, "40st": 265.5, "40hc": 295, "45hc": 354 },
+        savannah: { "20": 177, "40st": 265.5, "40hc": 295, "45hc": 354 },
+        jacksonville: { "20": 177, "40st": 265.5, "40hc": 295 },
+        atlanta: { "20": 177, "40st": 265.5, "40hc": 295 }
     },
     // Precios de alquiler de contenedores NUEVOS
     rent_new: {
-        miami: { "20": 258.75, "40hc": 402.5 },
-        tampa: { "20": 258.75, "40hc": 402.5 },
-        titusville: { "20": 258.75, "40hc": 402.5 },
-        jacksonville: { "20": 258.75, "40hc": 402.5 },
-        savannah: { "20": 258.75, "40hc": 402.5 },
-        atlanta: { "20": 258.75, "40hc": 402.5 }
+        miami: { "20": 265.5, "40hc": 413 },
+        tampa: { "20": 265.5, "40hc": 413 },
+        titusville: { "20": 265.5, "40hc": 413 },
+        jacksonville: { "20": 265.5, "40hc": 413 },
+        savannah: { "20": 265.5, "40hc": 413 },
+        atlanta: { "20": 265.5, "40hc": 413 }
     }
 };
 
